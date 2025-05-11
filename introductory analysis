@@ -1,0 +1,87 @@
+library(tidyverse)
+library(vdemdata)
+
+## Cargamos los datos del paquete V-Dem
+
+data(vdem)
+
+## Creamos un vector con nuestra variable dependiente
+
+poliarquia <- vdem$v2x_polyarchy
+
+# Estadistica descriptiva
+
+## Histograma para ver la distribucion de los datos segun la variable dependiente seleccionada
+hist(poliarquia,
+     main = "Histograma del índice de poliarquía",
+     xlab = "Nivel de democracia electoral (v2x_polyarchy)",
+     ylab = "Frecuencia",
+     col = "skyblue",
+     border = "black")
+
+## Tambien podemos optar por un grafico de densidad para visualizasr la distribucion 
+
+plot(density(na.omit(poliarquia)),
+     main = "Densidad de datos",
+     xlab = "Valores",
+     col = "red",
+     lwd = 2)
+
+## Testeamos la normalidad de nuestros datos
+
+library(nortest)
+ad.test(poliarquia)
+qqnorm(poliarquia)
+qqline(poliarquia, col = "red")
+
+## Grafico boxplot, donde vemos la concentracion de los datos
+
+boxplot(poliarquia,
+        main = "Distribución de Poliarquía",
+        ylab = "Índice de Poliarquía (v2x_polyarchy)",
+        col = "skyblue",
+        border = "black")
+
+## Calculamos cuartiles
+
+mean(poliarquia, na.rm = TRUE)
+median(poliarquia, na.rm = TRUE)
+sd(poliarquia, na.rm = TRUE)
+cv <- sd(poliarquia, na.rm = TRUE) / mean(poliarquia, na.rm = TRUE)
+cv
+
+cuartiles <- quantile(poliarquia, probs = c(0.25, 0.5, 0.75), na.rm = TRUE)
+print(cuartiles)
+
+## Calculamos percentiles
+
+percentiles <- quantile(poliarquia, probs = c(0.10, 0.90, 0.99), na.rm = TRUE)
+print(percentiles)
+
+## Ejemplo PCA para reducir dimensionalidad 
+
+vars_pca <- vdem %>%
+  select(
+    v2x_rule, v2x_jucon, v2xcl_rol, v2jupurge,
+    v2pepwrsoc, v2xeg_eqdr, v2xeg_eqaccess,
+    v2clkill, v2cltort, v2csreprss
+  ) %>%
+  drop_na()
+
+pca <- prcomp(vars_pca, scale. = TRUE)
+
+summary(pca)  # Varianza explicada
+pca$rotation   # Cargas de cada componente
+
+## Scree plot para elegir número de componentes
+plot(pca, type = "l", main = "Scree Plot")
+
+library(factoextra)
+
+fviz_eig(pca,
+         addlabels = TRUE,          # Muestra % en las barras
+         ylim = c(0, 50),           # Ajusta el eje y si es necesario
+         barfill = "steelblue",     # Color de barras
+         barcolor = "black",
+         linecolor = "red",         # Línea de acumulado
+         main = "Varianza explicada por componente (PCA)")
