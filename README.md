@@ -28,7 +28,25 @@ Variables independientes:
 6.v2xeg_eqdr: Igualdad de recursos
 7.v2xeg_eqaccess: Igualdad de acceso a la educación
 8.v2clkill: Asesinatos políticos
+9.v2cltort: Tortura
+10.v2csreprss: Represión civil
 
-v2cltort: Tortura
 
-v2csreprss: Represión civil
+Flujo del análisis
+
+1.Carga de datos:
+Los datos se obtienen directamente desde el paquete vdemdata.
+
+2.Análisis descriptivo:
+
+-Histograma y densidad del índice de poliarquía.
+-Boxplot para visualizar concentración de valores.
+-Test de normalidad (Anderson-Darling).
+-Cálculo de media, mediana, desviación estándar, coeficiente de variación, cuartiles y percentiles.
+
+3.Análisis de Componentes Principales (PCA):
+
+-Selección de variables institucionales.
+-Normalización y reducción de dimensionalidad mediante prcomp().
+-Visualización de varianza explicada (fviz_eig) y cargas factoriales.
+-Interpretación de las dimensiones latentes.
